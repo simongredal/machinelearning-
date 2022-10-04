@@ -1,0 +1,6 @@
+Flask
+Pillow
+tensorflow
+keras
+urllib3
+gunicorn
