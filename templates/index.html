@@ -4,132 +4,119 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css@1.12.0/mvp.css">
     <title>Drawing tools</title>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Brush colour and size
-            const colour = "#ffffff";
+            const colour = "#ffffff"
             const background = "#000000"
-            const strokeWidth = 20;
+            const strokeWidth = 20
 
             // Drawing state
-            let latestPoint;
-            let drawing = false;
+            let latestPoint
+            let drawing = false
 
             // Set up our drawing context
-            const canvas = document.getElementById("canvas");
-            const context = canvas.getContext("2d");
+            const canvas = document.getElementById("canvas")
+            const context = canvas.getContext("2d")
 
             // set background color
             const reset_canvas = () => {
-                context.beginPath();
-                context.rect(0, 0, 280, 280);
-                context.fillStyle = background;
-                context.fill();
+                context.beginPath()
+                context.rect(0, 0, 280, 280)
+                context.fillStyle = background
+                context.fill()
             }
 
             reset_canvas()
 
-            let brush;
+            let brush
 
             // Drawing functions
 
             const continueStroke = newPoint => {
-                context.beginPath();
-                context.moveTo(latestPoint[0], latestPoint[1]);
-                context.strokeStyle = colour;
-                context.lineWidth = strokeWidth;
-                context.lineCap = "round";
-                context.lineJoin = "round";
-                context.lineTo(newPoint[0], newPoint[1]);
-                context.stroke();
+                context.beginPath()
+                context.moveTo(latestPoint[0], latestPoint[1])
+                context.strokeStyle = colour
+                context.lineWidth = strokeWidth
+                context.lineCap = "round"
+                context.lineJoin = "round"
+                context.lineTo(newPoint[0], newPoint[1])
+                context.stroke()
 
-                latestPoint = newPoint;
-            };
+                latestPoint = newPoint
+            }
 
             // Event helpers
 
             const startStroke = point => {
-                drawing = true;
-                latestPoint = point;
-            };
+                drawing = true
+                latestPoint = point
+            }
 
             const getTouchPoint = evt => {
-                if (!evt.currentTarget) {
-                    return [0, 0];
-                }
-                const rect = evt.currentTarget.getBoundingClientRect();
-                const touch = evt.targetTouches[0];
-                return [touch.clientX - rect.left, touch.clientY - rect.top];
-            };
+                if (!evt.currentTarget)
+                    return [0, 0]
 
-            const BUTTON = 0b01;
-            const mouseButtonIsDown = buttons => (BUTTON & buttons) === BUTTON;
+                const rect = evt.currentTarget.getBoundingClientRect()
+                const touch = evt.targetTouches[0]
+                return [touch.clientX - rect.left, touch.clientY - rect.top]
+            }
+
+            const BUTTON = 0b01
+            const mouseButtonIsDown = buttons => (BUTTON & buttons) === BUTTON
 
             // Event handlers
 
             const mouseMove = evt => {
-                if (!drawing) {
-                    return;
-                }
-                continueStroke([evt.offsetX, evt.offsetY]);
-            };
+                if (!drawing)
+                    return
+
+                continueStroke([evt.offsetX, evt.offsetY])
+            }
 
             const mouseDown = evt => {
-                if (drawing) {
-                    return;
-                }
-                evt.preventDefault();
-                canvas.addEventListener("mousemove", mouseMove, false);
-                startStroke([evt.offsetX, evt.offsetY]);
-            };
+                if (drawing)
+                    return
+
+                evt.preventDefault()
+                canvas.addEventListener("mousemove", mouseMove, false)
+                startStroke([evt.offsetX, evt.offsetY])
+            }
 
             const mouseEnter = evt => {
-                if (!mouseButtonIsDown(evt.buttons) || drawing) {
-                    return;
-                }
-                mouseDown(evt);
-            };
+                if (!mouseButtonIsDown(evt.buttons) || drawing)
+                    return
+
+                mouseDown(evt)
+            }
 
             const endStroke = evt => {
-                if (!drawing) {
-                    return;
-                }
-                drawing = false;
-                evt.currentTarget.removeEventListener("mousemove", mouseMove, false);
-            };
+                if (!drawing)
+                    return
+
+                drawing = false
+                evt.currentTarget.removeEventListener("mousemove", mouseMove, false)
+            }
 
             const touchStart = evt => {
-                if (drawing) {
-                    return;
-                }
-                evt.preventDefault();
-                startStroke(getTouchPoint(evt));
-            };
+                if (drawing)
+                    return
+
+                evt.preventDefault()
+                startStroke(getTouchPoint(evt))
+            }
 
             const touchMove = evt => {
-                if (!drawing) {
-                    return;
-                }
-                continueStroke(getTouchPoint(evt));
-            };
+                if (!drawing)
+                    return
+
+                continueStroke(getTouchPoint(evt))
+            }
 
             const touchEnd = evt => {
-                drawing = false;
-            };
-
-            function dataURLtoBlob(dataurl) {
-                const arr = dataurl.split(',')
-                const mime = arr[0].match(/:(.*?);/)[1]
-                const bstr = atob(arr[1])
-                let n = bstr.length
-                const u8arr = new Uint8Array(n);
-
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-
-                return new Blob([u8arr], {type: mime});
+                drawing = false
             }
 
             const attach_drawing_to_form = async (event) => {
@@ -138,56 +125,44 @@
             }
 
             // Register event handlers
-            canvas.addEventListener("touchstart", touchStart, false);
-            canvas.addEventListener("touchend", touchEnd, false);
-            canvas.addEventListener("touchcancel", touchEnd, false);
-            canvas.addEventListener("touchmove", touchMove, false);
+            canvas.addEventListener("touchstart", touchStart, false)
+            canvas.addEventListener("touchend", touchEnd, false)
+            canvas.addEventListener("touchcancel", touchEnd, false)
+            canvas.addEventListener("touchmove", touchMove, false)
 
-            canvas.addEventListener("mousedown", mouseDown, false);
-            canvas.addEventListener("mouseup", endStroke, false);
-            canvas.addEventListener("mouseout", endStroke, false);
-            canvas.addEventListener("mouseenter", mouseEnter, false);
+            canvas.addEventListener("mousedown", mouseDown, false)
+            canvas.addEventListener("mouseup", endStroke, false)
+            canvas.addEventListener("mouseout", endStroke, false)
+            canvas.addEventListener("mouseenter", mouseEnter, false)
 
             document.querySelector("form").addEventListener("reset", reset_canvas, false)
             document.querySelector("form").addEventListener("formdata", attach_drawing_to_form, false)
         })
     </script>
-    <style>
-        body {
-            margin: 0;
-        }
-
-        main {
-            width: 700px;
-            margin-inline: auto;
-        }
-
-        canvas {
-            border: 2px solid black;
-        }
-
-        #colourInput {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-    </style>
 </head>
 <body>
 <main>
+    <header>
+        <h1>Handwritten Digit Recognition</h1>
+    </header>
     <form method="post" enctype="multipart/form-data">
+        <h2>Draw a digit and let the machine guess which it was!</h2>
         <canvas id="canvas" height="280" width="280"></canvas>
         <br>
-        <input type="text" name="image" id="image" hidden="hidden">
+        <input name="image" id="image" type="hidden">
+
         <button type="submit" id="submit_button">Submit drawing</button>
         <button type="reset" id="reset_button">Reset drawing</button>
     </form>
+    <section>
+        <p>
+            Canvas code taken from <a
+                href="https://dev.to/ascorbic/a-more-realistic-html-canvas-paint-tool-313b">dev.to</a>
+        </p>
 
-    <p>Canvas code taken from <a href="https://dev.to/ascorbic/a-more-realistic-html-canvas-paint-tool-313b">dev.to</a>
-    </p>
-
-    <p>Drawing is most likely as {{ most_likely }}, maybe a {{ second_likely }}</p>
-    <p>Raw results are: {{ result }}</p>
+        <p>Drawing is most likely the number {{ most_likely }}, maybe the number {{ second_likely }}</p>
+        <p>Raw results are: <code>{{ result }}</code></p>
+    </section>
 </main>
 </body>
 </html>
