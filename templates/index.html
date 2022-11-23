@@ -144,24 +144,26 @@
 <main>
     <header>
         <h1>Handwritten Digit Recognition</h1>
+        <small><h2>Draw a digit and let the machine guess which it was!</h2></small>
     </header>
-    <form method="post" enctype="multipart/form-data">
-        <h2>Draw a digit and let the machine guess which it was!</h2>
-        <canvas id="canvas" height="280" width="280"></canvas>
-        <br>
-        <input name="image" id="image" type="hidden">
+    <section>
+        <form method="post" enctype="multipart/form-data">
+            <section>
+                <canvas id="canvas" height="280" width="280"></canvas>
+            </section>
 
-        <button type="submit" id="submit_button">Submit drawing</button>
-        <button type="reset" id="reset_button">Reset drawing</button>
-    </form>
+            <input name="image" id="image" type="hidden">
+
+            <button type="submit" id="submit_button">Submit drawing</button>
+            <button type="reset" id="reset_button">Reset drawing</button>
+        </form>
+    </section>
     <section>
         <p>
-            Canvas code taken from <a
-                href="https://dev.to/ascorbic/a-more-realistic-html-canvas-paint-tool-313b">dev.to</a>
+            Canvas code taken from <a href="https://dev.to/ascorbic/a-more-realistic-html-canvas-paint-tool-313b">dev.to</a><br>
+            Drawing is most likely the number {{ most_likely }}, maybe the number {{ second_likely }}<br>
+            Raw results are: <samp>{{ result }}</samp>
         </p>
-
-        <p>Drawing is most likely the number {{ most_likely }}, maybe the number {{ second_likely }}</p>
-        <p>Raw results are: <code>{{ result }}</code></p>
     </section>
 </main>
 </body>
